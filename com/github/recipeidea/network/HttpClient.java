@@ -54,7 +54,7 @@ public class HttpClient {
 				InputStream inputStream = connection.openInputStream();
 				int c;
 				while ((c = inputStream.read()) != -1) {
-					stringBuffer.append(c);
+					stringBuffer.append((char) c);
 				}
 				inputStream.close();
 				break;

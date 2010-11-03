@@ -12,7 +12,7 @@ import net.rim.device.api.ui.container.VerticalFieldManager;
 
 public class WelcomeScreen extends MainScreen {
 
-	private static final String SEARCH_LABEL = "Search Recipes By Ingredient";
+	private static final String SEARCH_LABEL = "Find Recipes Idea By Ingredient : ";
 	private static final String EXAMPLE_LABEL = "Ex : Tomato, Egg, Noodle";
 	private static final String SEARCH_BUTTON = "Find!";
 

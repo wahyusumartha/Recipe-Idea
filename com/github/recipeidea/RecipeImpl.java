@@ -15,18 +15,18 @@ public class RecipeImpl implements Recipe {
 
 	public RecipeImpl(ServiceClient services) throws ServiceClientException {
 		this.services = services;
-		jsonObject = services.getData(this.services.getParameter());
+		// jsonObject = services.getData(this.services.getParameter());
+		jsonObject = new JSONObject();
 		log.debug(jsonObject.toString());
 	}
 
 	public RecipeImpl(JSONObject jsonObject) {
-		// this.services = services;
 		this.jsonObject = jsonObject;
 	}
 
 	public String getIngredients() {
 		try {
-			return jsonObject.getJSONObject("results").getString("ingredients");
+			return jsonObject.getString("ingredients");
 		} catch (JSONException e) {
 			log.error(e.getMessage());
 		}
@@ -35,37 +35,19 @@ public class RecipeImpl implements Recipe {
 
 	public String getLink() {
 		try {
-			return jsonObject.getJSONObject("results").getString("href");
+			// return jsonObject.getJSONObject("results").getString("href");
+			return jsonObject.getString("href");
 		} catch (JSONException e) {
 			log.error(e.getMessage());
 		}
 		return null;
 	}
 
-	public JSONArray getRecipes() {
-		try {
-			JSONArray array = services.getData(services.getParameter())
-					.getJSONArray("results");
-
-			for (int i = 0; i < array.length(); i++) {
-				// JSONObject recipeObject = array.getJSONObject(i);
-				// recipe[i] = new RecipeImpl(services, recipeObject);
-				log.debug(array.getJSONObject(i).toString());
-			}
-			return array;
-		} catch (JSONException e) {
-			log.error(getClass().getName() + " : " + e.getMessage());
-		} catch (ServiceClientException e) {
-			log.error(getClass().getName() + " : " + e.getMessage());
-		}
-
-		return null;
-
-	}
-
 	public String getThumbnail() {
 		try {
-			return jsonObject.getJSONObject("results").getString("thumbnail");
+			// return
+			// jsonObject.getJSONObject("results").getString("thumbnail");
+			return jsonObject.getString("thumbnail");
 		} catch (JSONException e) {
 			log.error(e.getMessage());
 		}
@@ -74,11 +56,33 @@ public class RecipeImpl implements Recipe {
 
 	public String getTitle() {
 		try {
-			return jsonObject.getJSONObject("results").getString("title");
+			// return jsonObject.getJSONObject("results").getString("title");
+			return jsonObject.getString("title");
 		} catch (JSONException e) {
 			log.error(e.getMessage());
 		}
 		return null;
+	}
+
+	public Recipe[] getRecipe() {
+		Recipe[] recipe = null;
+
+		try {
+			JSONArray array = services.getData(services.getParameter())
+					.getJSONArray("results");
+			recipe = new Recipe[array.length()];
+			for (int i = 0; i < array.length(); i++) {
+				JSONObject recipeObject = array.getJSONObject(i);
+				log.debug(recipeObject.toString());
+				recipe[i] = new RecipeImpl(recipeObject);
+			}
+		} catch (JSONException e) {
+			log.error(e.getMessage());
+		} catch (ServiceClientException e) {
+			log.error(e.getMessage());
+		}
+		return recipe;
+
 	}
 
 }

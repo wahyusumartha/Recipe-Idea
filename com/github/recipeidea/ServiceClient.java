@@ -55,4 +55,12 @@ public class ServiceClient {
 		return recipeAccess;
 	}
 
+	public HttpClient getHttpClient() {
+		return httpClient;
+	}
+
+	public void setHttpClient(HttpClient httpClient) {
+		this.httpClient = httpClient;
+	}
+
 }

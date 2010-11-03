@@ -1,16 +1,19 @@
 package com.github.recipeidea.ui;
 
+import com.github.recipeidea.ServiceClient;
+import com.github.recipeidea.log.Logger;
+import com.github.recipeidea.test.Test;
 import com.github.recipeidea.ui.component.BackgroundManager;
 import com.github.recipeidea.ui.component.HeaderField;
 import com.github.recipeidea.ui.component.RoundRectField;
 import com.github.recipeidea.ui.component.WEditField;
 import com.github.recipeidea.ui.component.WLabelField;
 
+import net.rim.device.api.ui.component.Dialog;
 import net.rim.device.api.ui.component.SeparatorField;
-import net.rim.device.api.ui.container.MainScreen;
 import net.rim.device.api.ui.container.VerticalFieldManager;
 
-public class WelcomeScreen extends MainScreen {
+public class WelcomeScreen extends RecipeIdeaScreen {
 
 	private static final String SEARCH_LABEL = "Find Recipes Idea By Ingredient : ";
 	private static final String EXAMPLE_LABEL = "Ex : Tomato, Egg, Noodle";
@@ -22,7 +25,10 @@ public class WelcomeScreen extends MainScreen {
 	private WLabelField exampleLabel;
 	private RoundRectField searchButton;
 
-	public WelcomeScreen() {
+	protected Logger log = Logger.getLogger(getClass());
+
+	public WelcomeScreen(ServiceClient serviceClient) {
+		super(serviceClient);
 		VerticalFieldManager vertical = new VerticalFieldManager(
 				VerticalFieldManager.NO_HORIZONTAL_SCROLL
 						| VerticalFieldManager.NO_VERTICAL_SCROLL);
@@ -32,7 +38,12 @@ public class WelcomeScreen extends MainScreen {
 		searchLabel = new WLabelField(SEARCH_LABEL);
 		exampleLabel = new WLabelField(EXAMPLE_LABEL);
 		keywordEditField = new WEditField();
-		searchButton = new RoundRectField(SEARCH_BUTTON);
+		searchButton = new RoundRectField(SEARCH_BUTTON) {
+			protected void doAction() {
+				fireAction(Test.ACTION_ENTER);
+			}
+
+		};
 		vertical.add(banner);
 		vertical.add(new SeparatorField());
 		vertical.add(searchLabel);
@@ -47,4 +58,12 @@ public class WelcomeScreen extends MainScreen {
 		add(backgroundScreen);
 	}
 
+	public boolean onClose() {
+		if (Dialog
+				.ask("Are You Sure to Exit?", new String[] { "Yes", "No" }, 0) == 0) {
+			log.info(getClass().getName() + ": User Exiting Application");
+			((RecipeIdea) getApplication()).exit();
+		}
+		return true;
+	}
 }

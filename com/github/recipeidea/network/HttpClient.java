@@ -16,6 +16,10 @@ public class HttpClient {
 		factory = hFactory;
 	}
 
+	public StringBuffer doGet(String url) throws Exception {
+		return doGet(url, null, factory);
+	}
+
 	/*
 	 * Get Method Connection
 	 * 

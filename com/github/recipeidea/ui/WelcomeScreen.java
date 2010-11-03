@@ -45,7 +45,6 @@ public class WelcomeScreen extends MainScreen {
 		backgroundScreen.add(vertical);
 		// hfm.add(backgroundScreen);
 		add(backgroundScreen);
-
 	}
 
 }

@@ -1,7 +1,5 @@
 package com.github.recipeidea;
 
-import java.util.Vector;
-
 import com.github.recipeidea.json.JSONArray;
 
 public interface Recipe {

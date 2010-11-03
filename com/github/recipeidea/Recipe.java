@@ -1,7 +1,5 @@
 package com.github.recipeidea;
 
-import com.github.recipeidea.json.JSONArray;
-
 public interface Recipe {
 
 	/*
@@ -27,5 +25,5 @@ public interface Recipe {
 	/*
 	 * Recipe List
 	 */
-	public JSONArray getRecipes();
+	public Recipe[] getRecipe();
 }

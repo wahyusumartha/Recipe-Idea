@@ -170,8 +170,8 @@ public class WEditField extends Manager {
 		this.editField.setText(text);
 	}
 
-	public void getText() {
-		this.editField.getText();
+	public String getText() {
+		return this.editField.getText();
 	}
 
 }

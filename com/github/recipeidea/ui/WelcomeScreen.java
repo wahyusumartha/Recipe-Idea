@@ -40,7 +40,11 @@ public class WelcomeScreen extends RecipeIdeaScreen {
 		keywordEditField = new WEditField();
 		searchButton = new RoundRectField(SEARCH_BUTTON) {
 			protected void doAction() {
-				fireAction(Test.ACTION_ENTER);
+				// fireAction(Test.ACTION_ENTER);
+				WelcomeScreen.this.serviceClient.setParameter(keywordEditField
+						.getText());
+				fireAction(RecipesScreen.ACTION_ENTER);
+				keywordEditField.setText("");
 			}
 
 		};

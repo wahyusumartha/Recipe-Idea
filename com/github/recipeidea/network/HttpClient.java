@@ -16,8 +16,14 @@ public class HttpClient {
 		factory = hFactory;
 	}
 
+	/*
+	 * Get Method Connection
+	 * 
+	 * @Url url to Server
+	 */
 	public StringBuffer doGet(String url) throws Exception {
-		return doGet(url, null, factory);
+		// second parameter not using null, because using to retrieve images
+		return doGet(url, "", factory);
 	}
 
 	/*

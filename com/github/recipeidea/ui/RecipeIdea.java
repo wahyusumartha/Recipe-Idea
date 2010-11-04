@@ -8,6 +8,7 @@ import com.github.recipeidea.network.HttpConnectionFactory;
 import com.github.recipeidea.test.Test;
 
 import net.rim.device.api.ui.UiApplication;
+import net.rim.device.api.ui.component.Dialog;
 
 public class RecipeIdea extends UiApplication implements ActionListener {
 
@@ -55,8 +56,19 @@ public class RecipeIdea extends UiApplication implements ActionListener {
 								.error(getClass().getName() + " : "
 										+ e.getMessage());
 					}
+					pushScreen(testScreen);
 				}
-				pushScreen(testScreen);
+			} else if (event.getAction().equals(RecipesScreen.ACTION_ENTER)) {
+				if (recipesScreen == null) {
+					recipesScreen = new RecipesScreen(serviceClient);
+					recipesScreen.addActionListener(this);
+				}
+				recipesScreen.loadList();
+				pushScreen(recipesScreen);
+			}
+		} else if (event.getSource() == recipesScreen) {
+			if (event.getAction().equals(RecipesScreen.ACTION_ERROR)) {
+				Dialog.alert("Error : " + event.getData());
 			}
 		}
 	}

@@ -9,16 +9,15 @@ import com.github.recipeidea.ServiceClient;
 import com.github.recipeidea.log.Logger;
 import com.github.recipeidea.ui.component.BackgroundManager;
 import com.github.recipeidea.ui.component.HeaderField;
+import com.github.recipeidea.util.image.ImageUtil;
 
 import net.rim.device.api.system.Bitmap;
 import net.rim.device.api.system.Display;
-import net.rim.device.api.ui.Color;
 import net.rim.device.api.ui.DrawStyle;
 import net.rim.device.api.ui.Font;
 import net.rim.device.api.ui.FontFamily;
 import net.rim.device.api.ui.Graphics;
 import net.rim.device.api.ui.Ui;
-import net.rim.device.api.ui.component.LabelField;
 import net.rim.device.api.ui.component.ListField;
 import net.rim.device.api.ui.component.ListFieldCallback;
 import net.rim.device.api.ui.component.SeparatorField;
@@ -35,23 +34,18 @@ final class RecipesScreen extends RecipeIdeaScreen {
 	private StreamListCallBack streamListCallBack = new StreamListCallBack();
 
 	private HeaderField banner;
-	private BackgroundManager backgroundManager;
 
 	protected Logger log = Logger.getLogger(getClass());
 
 	public RecipesScreen(ServiceClient serviceClient) {
 		super(serviceClient);
 		banner = new HeaderField(BANNER_TITLE);
-		// backgroundManager = new BackgroundManager();
 		listField = new ListField();
 		listField.setRowHeight(50);
 		listField.setCallback(streamListCallBack);
 		add(banner);
 		add(new SeparatorField());
 		add(listField);
-		// backgroundManager.add(banner);
-		// backgroundManager.add(listField);
-		// add(backgroundManager);
 	}
 
 	public void loadList() {
@@ -103,7 +97,7 @@ final class RecipesScreen extends RecipeIdeaScreen {
 			if (index < recipes.size()) {
 				int height = listField.getRowHeight();
 				// log.info("List Height : " + height);
-
+				ImageUtil imageUtil = new ImageUtil();
 				Recipe recipe = (Recipe) recipes.elementAt(index);
 				Bitmap bitmap = getBitmap(recipe.getTitle());
 				/*
@@ -136,8 +130,8 @@ final class RecipesScreen extends RecipeIdeaScreen {
 					graphics.drawBitmap(0,
 							y
 									+ ((height - Math.min(bitmap.getHeight(),
-											height)) / 2), 50, height, bitmap,
-							0, 0);
+											height)) / 2), 50, height,
+							imageUtil.bestFit(bitmap, 50, height), 0, 0);
 				}
 
 				FontFamily fontFamily = null;

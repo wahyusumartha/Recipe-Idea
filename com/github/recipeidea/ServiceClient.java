@@ -63,4 +63,8 @@ public class ServiceClient {
 		this.httpClient = httpClient;
 	}
 
+	public HttpConnectionFactory getHttpConnectionFactory() {
+		return factory;
+	}
+
 }

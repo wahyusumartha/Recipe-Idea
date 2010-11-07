@@ -7,10 +7,12 @@ import java.util.Vector;
 import com.github.recipeidea.Recipe;
 import com.github.recipeidea.ServiceClient;
 import com.github.recipeidea.log.Logger;
-import com.github.recipeidea.ui.component.BackgroundManager;
 import com.github.recipeidea.ui.component.HeaderField;
 import com.github.recipeidea.util.image.ImageUtil;
 
+import net.rim.blackberry.api.browser.Browser;
+import net.rim.blackberry.api.browser.BrowserSession;
+import net.rim.device.api.system.Application;
 import net.rim.device.api.system.Bitmap;
 import net.rim.device.api.system.Display;
 import net.rim.device.api.ui.DrawStyle;
@@ -18,6 +20,7 @@ import net.rim.device.api.ui.Font;
 import net.rim.device.api.ui.FontFamily;
 import net.rim.device.api.ui.Graphics;
 import net.rim.device.api.ui.Ui;
+import net.rim.device.api.ui.component.Dialog;
 import net.rim.device.api.ui.component.ListField;
 import net.rim.device.api.ui.component.ListFieldCallback;
 import net.rim.device.api.ui.component.SeparatorField;
@@ -40,7 +43,40 @@ final class RecipesScreen extends RecipeIdeaScreen {
 	public RecipesScreen(ServiceClient serviceClient) {
 		super(serviceClient);
 		banner = new HeaderField(BANNER_TITLE);
-		listField = new ListField();
+		listField = new ListField() {
+
+			protected boolean navigationClick(int status, int time) {
+
+				// Dialog.alert(((Recipe) streamListCallBack.get(listField,
+				// listField.getSelectedIndex())).getLink());
+				if (listField.isEmpty() == true) {
+					return false;
+				} else {
+					Application.getApplication().invokeAndWait(new Runnable() {
+						public void run() {
+							if (Dialog.ask("Do you want to visit "
+									+ ((Recipe) streamListCallBack.get(
+											listField, listField
+													.getSelectedIndex()))
+											.getLink(), new String[] { "Yes",
+									"No" }, 0) == 0) {
+								BrowserSession visit = Browser
+										.getDefaultSession();
+								visit
+										.displayPage(((Recipe) streamListCallBack
+												.get(listField, listField
+														.getSelectedIndex()))
+												.getLink());
+							}
+
+						}
+					});
+					return true;
+				}
+
+			}
+
+		};
 		listField.setRowHeight(50);
 		listField.setCallback(streamListCallBack);
 		add(banner);
@@ -56,15 +92,17 @@ final class RecipesScreen extends RecipeIdeaScreen {
 		try {
 			// serviceClient.setParameter("Tomato");
 			Recipe[] recipes = serviceClient.getRecipeAccess().getRecipe();
-			log.debug(recipes[0].getTitle());
-			streamListCallBack.clear();
+			if (recipes.length > 0) {
+				log.debug(recipes[0].getTitle());
+				streamListCallBack.clear();
 
-			for (int i = 0; i < recipes.length; i++) {
-				listField.insert(listField.getSize());
-				streamListCallBack.add(recipes[i]);
+				for (int i = 0; i < recipes.length; i++) {
+					listField.insert(listField.getSize());
+					streamListCallBack.add(recipes[i]);
+				}
+				// Load Thumbnail
+				streamListCallBack.loadBitmaps();
 			}
-			// Load Thumbnail
-			streamListCallBack.loadBitmaps();
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			fireAction(ACTION_ERROR, e.getMessage());
@@ -157,10 +195,14 @@ final class RecipesScreen extends RecipeIdeaScreen {
 		}
 
 		public Object get(ListField listField, int index) {
+			if (recipes.size() < 0) {
+				return null;
+			}
 			if (index < recipes.size()) {
 				return recipes.elementAt(index);
 			}
 			return null;
+
 		}
 
 		public int getPreferredWidth(ListField listField) {
@@ -185,6 +227,10 @@ final class RecipesScreen extends RecipeIdeaScreen {
 
 		public void loadBitmaps() {
 			new BitmapThread().start();
+		}
+
+		public Vector getRecipes() {
+			return recipes;
 		}
 
 		private class BitmapThread extends Thread {
